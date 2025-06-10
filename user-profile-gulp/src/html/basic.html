@@ -1,0 +1,48 @@
+<!-- Basic Details Update -->
+<section id="panel-basic" role="tabpanel" aria-labelledby="tab-basic" class="tab-content">
+    <h2>Update Basic Details</h2>
+    <form id="basicDetailsForm" class="form" novalidate>
+        <div class="form__group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" required minlength="3" 
+                placeholder="Enter your full name" aria-describedby="fullNameHelp" />
+            <div id="fullNameHelp" class="form__message" aria-live="polite"></div>
+        </div>
+
+        <div class="form__group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required 
+                placeholder="Enter your email" aria-describedby="emailHelp" />
+            <div id="emailHelp" class="form__message" aria-live="polite"></div>
+        </div>
+
+        <div class="form__group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" required 
+                pattern="^\+?[0-9\s\-]{7,15}$" placeholder="Enter your phone number" 
+                aria-describedby="phoneHelp" />
+            <div id="phoneHelp" class="form__message" aria-live="polite"></div>
+        </div>
+
+        <div class="form__group">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" rows="3" required 
+                placeholder="Enter your address" aria-describedby="addressHelp"></textarea>
+            <div id="addressHelp" class="form__message" aria-live="polite"></div>
+        </div>
+
+        <div class="form__group form__group--file">
+            <label for="profileImage">Profile Image</label>
+            <div class="file-upload">
+                <input type="file" id="profileImage" name="profileImage" 
+                    accept="image/*" aria-describedby="imageHelp" />
+                <label for="profileImage" class="btn btn--secondary">Choose Image</label>
+                <span class="file-upload__text">No file chosen</span>
+            </div>
+            <div id="imageHelp" class="form__message" aria-live="polite"></div>
+            <div class="image-preview__container" aria-live="polite"></div>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Update Details</button>
+    </form>
+</section> 

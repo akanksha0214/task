@@ -1,0 +1,36 @@
+<!-- Basic Details Form Partial -->
+<section id="basic-tab" class="tab-content" role="tabpanel" aria-labelledby="basic-tab" hidden>
+    <form class="profile-form" id="basic-form" novalidate>
+        <div class="form-group">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" id="name" name="name" class="form-control" required
+                   aria-required="true" aria-invalid="false">
+            <div class="invalid-feedback" role="alert"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" required
+                   aria-required="true" aria-invalid="false">
+            <div class="invalid-feedback" role="alert"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="tel" id="phone" name="phone" class="form-control" required
+                   aria-required="true" aria-invalid="false">
+            <div class="invalid-feedback" role="alert"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="address" class="form-label">Address</label>
+            <textarea id="address" name="address" class="form-control" required
+                      aria-required="true" aria-invalid="false"></textarea>
+            <div class="invalid-feedback" role="alert"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" aria-label="Save basic details">
+            Save Changes
+        </button>
+    </form>
+</section> 

@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User Profile</title>
+    <!-- <link rel="stylesheet" href="css/main.css" /> -->
+    <style>
+        /* Enhanced Tab Navigation Styles */
+        .profile__tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: #6c757d;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0.75rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 120px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            overflow: hidden;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 0.75rem;
+            padding: 2px;
+            background: var(--tab-gradient);
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--tab-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        /* Basic Details Tab */
+        .tab-button[data-tab="basic"] {
+            --tab-gradient: linear-gradient(45deg, #4e54c8, #8f94fb);
+            --tab-color: #4e54c8;
+        }
+
+        /* Password Tab */
+        .tab-button[data-tab="password"] {
+            --tab-gradient: linear-gradient(45deg, #11998e, #38ef7d);
+            --tab-color: #11998e;
+        }
+
+        /* Trips Tab */
+        .tab-button[data-tab="trips"] {
+            --tab-gradient: linear-gradient(45deg, #ff9966, #ff5e62);
+            --tab-color: #ff5e62;
+        }
+
+        /* Deactivate Tab */
+        .tab-button[data-tab="deactivate"] {
+            --tab-gradient: linear-gradient(45deg, #cb2d3e, #ef473a);
+            --tab-color: #cb2d3e;
+        }
+
+        .tab-button:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .tab-button:hover::before {
+            opacity: 1;
+        }
+
+        .tab-button:hover::after {
+            opacity: 0.1;
+        }
+
+        .tab-button.active {
+            color: #fff;
+            background: var(--tab-gradient);
+            box-shadow: 0 4px 15px var(--tab-color);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active::before {
+            opacity: 0;
+        }
+
+        .tab-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--tab-color);
+        }
+
+        .tab-button:focus:not(:focus-visible) {
+            box-shadow: none;
+        }
+
+        /* Add icons to tab buttons with animation */
+        .tab-button[data-tab="basic"]::after {
+            content: '👤';
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button[data-tab="password"]::after {
+            content: '🔒';
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button[data-tab="trips"]::after {
+            content: '✈️';
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button[data-tab="deactivate"]::after {
+            content: '⚠️';
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button:hover::after {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        /* Add ripple effect */
+        .tab-button .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile__tabs {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                padding: 0.5rem;
+            }
+
+            .tab-button {
+                flex: 1 1 calc(50% - 0.5rem);
+                padding: 0.75rem 1rem;
+                font-size: 0.75rem;
+                min-width: 0;
+            }
+
+            .tab-button::after {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile__tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                flex: 1 1 100%;
+                width: 100%;
+            }
+        }
+
+        /* Enhanced Tab Content Styles */
+        .tab-content {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 1rem;
+        }
+
+        .tab-content h2 {
+            color: #212529;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        /* Enhanced Form Styles */
+        .form__group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form__group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .form__group input,
+        .form__group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form__group input:focus,
+        .form__group textarea:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+            outline: none;
+        }
+
+        .form__group input.is-invalid,
+        .form__group textarea.is-invalid {
+            border-color: #dc3545;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.25rem;
+        }
+
+        .form__group input.is-valid,
+        .form__group textarea.is-valid {
+            border-color: #198754;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.25rem;
+        }
+
+        /* Enhanced Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn--primary {
+            background: #0d6efd;
+            color: white;
+            border: none;
+        }
+
+        .btn--primary:hover {
+            background: #0b5ed7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+        }
+
+        .btn--danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .btn--danger:hover {
+            background: #bb2d3b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        }
+
+        /* Enhanced File Upload Styles */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload__input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload__button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 0.5rem;
+            color: #6c757d;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .file-upload__button:hover {
+            background: #e9ecef;
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        /* Enhanced Image Preview Styles */
+        .image-preview__container {
+            margin-top: 0.25rem;
+            position: relative;
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+        }
+
+        .image-preview__image {
+            max-width: 10px !important;
+            max-height: 10px !important;
+            object-fit: fill;
+            border-radius: 0.25rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+
+        .image-preview__remove {
+            position: absolute;
+            top: -0.125rem;
+            right: -2rem;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.5rem;
+            padding: 0;
+            line-height: 1;
+            z-index: 1;
+        }
+
+        .image-preview__remove:hover {
+            background: #bb2d3b;
+            transform: scale(1.1);
+        }
+
+        /* Override any other styles that might affect the image size */
+        .form__group--file .image-preview__image,
+        .file-upload + .image-preview__container .image-preview__image {
+            width: 10px !important;
+            height: 10px !important;
+            max-width: 10px !important;
+            max-height: 10px !important;
+        }
+
+        /* Enhanced Trip Card Styles */
+        .trip-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .trip-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .trip-card__title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #212529;
+            margin: 0;
+        }
+
+        .trip-card__date {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .trip-card__amount {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #198754;
+            margin: 0.5rem 0;
+        }
+
+        .trip-card__status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .trip-card__status--upcoming {
+            background: #cff4fc;
+            color: #055160;
+        }
+
+        .trip-card__status--completed {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .trip-card__status--cancelled {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .trip-card__actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Enhanced Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal__content {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 1rem;
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal__close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #f8f9fa;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .modal__close:hover {
+            background: #e9ecef;
+            color: #212529;
+            transform: rotate(90deg);
+        }
+
+        .modal h3 {
+            color: #dc3545;
+            font-size: 1.5rem;
+            margin: 0 0 1rem;
+        }
+
+        .modal p {
+            color: #6c757d;
+            margin: 0 0 1.5rem;
+            line-height: 1.5;
+        }
+
+        .modal input[type="text"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .modal input[type="text"]:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+            outline: none;
+        }
+
+        .modal .form__message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .modal .form__message.error {
+            background: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+
+        .modal .form__message.success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+
+        /* Add these styles to your existing styles */
+        .trips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .trip-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .trip-card__header {
+            padding: 1.25rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trip-card__title {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .trip-card__status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .trip-card__status--upcoming {
+            background: #cff4fc;
+            color: #055160;
+        }
+
+        .trip-card__status--completed {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .trip-card__status--cancelled {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .trip-card__body {
+            padding: 1.25rem;
+        }
+
+        .trip-card__info {
+            margin-bottom: 1.25rem;
+        }
+
+        .trip-card__detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .trip-card__detail:last-child {
+            margin-bottom: 0;
+        }
+
+        .trip-card__label {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .trip-card__value {
+            font-weight: 500;
+            color: #212529;
+        }
+
+        .trip-card__actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn--small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .trips-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .trips-filters .form__group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form__select,
+        .form__input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .form__select:focus,
+        .form__input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .trips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trips-filters {
+                flex-direction: column;
+            }
+
+            .trips-filters .form__group {
+                width: 100%;
+            }
+
+            .trip-card__actions {
+                flex-direction: column;
+            }
+
+            .trip-card__actions .btn {
+                width: 100%;
+            }
+        }
+
+        .no-results-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            color: #6c757d;
+            font-size: 1rem;
+            margin: 1rem 0;
+        }
+
+        .trip-card {
+            transition: opacity 0.3s ease;
+        }
+
+        .trip-card[style*="display: none"] {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="profile" role="main">
+        <h1>User Profile</h1>
+
+        <!-- Tabs Navigation -->
+        <div class="profile__tabs" role="tablist" aria-label="Profile sections">
+            <button type="button" data-tab="panel-password" role="tab" aria-selected="true" class="tab-button active">
+                <span class="tab-icon" aria-hidden="true">🔒</span>
+                <span>Password</span>
+            </button>
+            <button type="button" data-tab="panel-basic" role="tab" aria-selected="false" class="tab-button">
+                <span class="tab-icon" aria-hidden="true">👤</span>
+                <span>Basic</span>
+            </button>
+            <button type="button" data-tab="panel-trips" role="tab" aria-selected="false" class="tab-button">
+                <span class="tab-icon" aria-hidden="true">✈️</span>
+                <span>Trips</span>
+            </button>
+            <button type="button" data-tab="panel-deactivate" role="tab" aria-selected="false" class="tab-button">
+                <span class="tab-icon" aria-hidden="true">⚠️</span>
+                <span>Account</span>
+            </button>
+            <div class="tabs-indicator"></div>
+        </div>
+
+        <!-- Tab Panels -->
+        <div class="tab-panels">
+            <!-- Password Update -->
+            <section id="panel-password" role="tabpanel" class="tab-content tab-content--active" aria-labelledby="tab-password">
+                <h2>Update Password</h2>
+                <form id="passwordForm" class="form" novalidate>
+                    <div class="form__group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" required minlength="6"
+                            aria-describedby="passwordHelp passwordStrength" placeholder="Enter new password" />
+                        <div id="passwordStrength" class="password-strength" aria-live="polite">
+                            <div class="strength-meter">
+                                <div class="strength-meter__bar"></div>
+                            </div>
+                            <div class="strength-meter__text strength-meter__text--none">
+                                Password strength: <span id="strengthText">None</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form__group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required
+                            aria-describedby="passwordMatchHelp" placeholder="Confirm new password" />
+                        <div id="passwordMatchHelp" class="form__message" aria-live="polite"></div>
+                    </div>
+                    <div id="passwordHelp" class="form__message" aria-live="polite"></div>
+                    <button type="submit" class="btn btn--primary">Update Password</button>
+                </form>
+            </section>
+
+            <!-- Basic Details -->
+            <section id="panel-basic" role="tabpanel" class="tab-content" aria-labelledby="tab-basic" hidden>
+                <h2>Update Basic Details</h2>
+                <form id="basicDetailsForm" class="form" novalidate>
+                    <div class="form__group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" required minlength="3" 
+                            placeholder="Enter your full name" aria-describedby="fullNameHelp" />
+                        <div id="fullNameHelp" class="form__message" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form__group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required 
+                            placeholder="Enter your email" aria-describedby="emailHelp" />
+                        <div id="emailHelp" class="form__message" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form__group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" required 
+                            pattern="^\+?[0-9\s\-]{7,15}$" placeholder="Enter your phone number" 
+                            aria-describedby="phoneHelp" />
+                        <div id="phoneHelp" class="form__message" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form__group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" rows="3" required 
+                            placeholder="Enter your address" aria-describedby="addressHelp"></textarea>
+                        <div id="addressHelp" class="form__message" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form__group form__group--file">
+                        <label for="profileImage">Profile Image</label>
+                        <div class="file-upload">
+                            <input type="file" id="profileImage" name="profileImage" 
+                                accept="image/*" aria-describedby="imageHelp" />
+                            <label for="profileImage" class="btn btn--secondary">Choose Image</label>
+                            <span class="file-upload__text">No file chosen</span>
+                        </div>
+                        <div id="imageHelp" class="form__message" aria-live="polite"></div>
+                        <div class="image-preview__container" aria-live="polite"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary">Update Details</button>
+                </form>
+            </section>
+
+            <!-- Recent Trips -->
+            <section id="panel-trips" role="tabpanel" class="tab-content" aria-labelledby="tab-trips" hidden>
+                <h2>Recent Trips</h2>
+                <div class="trips-container">
+                    <div class="trips-filters">
+                        <div class="form__group">
+                            <select id="statusFilter" class="form__select">
+                                <option value="all">All Trips</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form__group">
+                            <input type="text" id="searchTrips" placeholder="Search by destination or booking ID" class="form__input" />
+                        </div>
+                    </div>
+
+                    <div class="trips-grid">
+                        <!-- Trip Card 1 -->
+                        <div class="trip-card">
+                            <div class="trip-card__header">
+                                <h3 class="trip-card__title">Paris Getaway</h3>
+                                <span class="trip-card__status trip-card__status--upcoming">Upcoming</span>
+                            </div>
+                            <div class="trip-card__body">
+                                <div class="trip-card__info">
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Booking ID</span>
+                                        <span class="trip-card__value">#TRP-2024-001</span>
+                                    </div>
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Date</span>
+                                        <span class="trip-card__value">Mar 15, 2024</span>
+                                    </div>
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Amount</span>
+                                        <span class="trip-card__value">$1,200</span>
+                                    </div>
+                                </div>
+                                <div class="trip-card__actions">
+                                    <button class="btn btn--primary btn--small">View Details</button>
+                                    <button class="btn btn--danger btn--small">Cancel Trip</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trip Card 2 -->
+                        <div class="trip-card">
+                            <div class="trip-card__header">
+                                <h3 class="trip-card__title">Tokyo Adventure</h3>
+                                <span class="trip-card__status trip-card__status--completed">Completed</span>
+                            </div>
+                            <div class="trip-card__body">
+                                <div class="trip-card__info">
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Booking ID</span>
+                                        <span class="trip-card__value">#TRP-2024-002</span>
+                                    </div>
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Date</span>
+                                        <span class="trip-card__value">Feb 28, 2024</span>
+                                    </div>
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Amount</span>
+                                        <span class="trip-card__value">$2,500</span>
+                                    </div>
+                                </div>
+                                <div class="trip-card__actions">
+                                    <button class="btn btn--primary btn--small">View Details</button>
+                                    <button class="btn btn--primary btn--small">Download Bill</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trip Card 3 -->
+                        <div class="trip-card">
+                            <div class="trip-card__header">
+                                <h3 class="trip-card__title">London Weekend</h3>
+                                <span class="trip-card__status trip-card__status--cancelled">Cancelled</span>
+                            </div>
+                            <div class="trip-card__body">
+                                <div class="trip-card__info">
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Booking ID</span>
+                                        <span class="trip-card__value">#TRP-2024-003</span>
+                                    </div>
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Date</span>
+                                        <span class="trip-card__value">Feb 15, 2024</span>
+                                    </div>
+                                    <div class="trip-card__detail">
+                                        <span class="trip-card__label">Amount</span>
+                                        <span class="trip-card__value">$800</span>
+                                    </div>
+                                </div>
+                                <div class="trip-card__actions">
+                                    <button class="btn btn--primary btn--small">View Details</button>
+                                    <button class="btn btn--primary btn--small">Download Bill</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deactivate Account -->
+            <section id="panel-deactivate" role="tabpanel" class="tab-content" aria-labelledby="tab-deactivate" hidden>
+                <h2>Deactivate Account</h2>
+                <button id="openModal" class="btn btn--danger">Deactivate Account</button>
+
+                <div class="modal" id="deactivateModal" role="dialog" aria-modal="true" hidden>
+                    <div class="modal__content">
+                        <button class="modal__close" id="closeModal" aria-label="Close modal">&times;</button>
+                        <h3>Confirm Deactivation</h3>
+                        <p>Type <strong>deactivate</strong> below to confirm account deactivation.</p>
+
+                        <input type="text" id="confirmInput" placeholder="Type 'deactivate'" />
+                        <button id="confirmDeactivate" class="btn btn--danger" disabled>Confirm</button>
+
+                        <div id="deactivateMessage" class="form__message"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all tab buttons and panels
+            const tabButtons = document.querySelectorAll('[role="tab"]');
+            const tabPanels = document.querySelectorAll('[role="tabpanel"]');
+
+            // Function to switch tabs
+            function switchTab(selectedTab) {
+                // Get the target panel ID
+                const targetId = selectedTab.getAttribute('data-tab');
+                
+                // Update tab buttons
+                tabButtons.forEach(button => {
+                    const isSelected = button === selectedTab;
+                    button.setAttribute('aria-selected', isSelected);
+                    button.classList.toggle('active', isSelected);
+                });
+
+                // Update tab panels
+                tabPanels.forEach(panel => {
+                    const isSelected = panel.id === targetId;
+                    panel.classList.toggle('tab-content--active', isSelected);
+                    panel.setAttribute('aria-hidden', !isSelected);
+                    // Ensure proper display
+                    panel.style.display = isSelected ? 'block' : 'none';
+                });
+
+                // Initialize tab-specific functionality
+                if (targetId === 'panel-password') {
+                    initializePasswordTab();
+                } else if (targetId === 'panel-basic') {
+                    initializeBasicTab();
+                } else if (targetId === 'panel-trips') {
+                    initializeTripsTab();
+                } else if (targetId === 'panel-deactivate') {
+                    initializeDeactivateTab();
+                }
+            }
+
+            // Add click handlers to all tab buttons
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button);
+                });
+            });
+
+            // Handle keyboard navigation
+            tabButtons.forEach(button => {
+                button.addEventListener('keydown', e => {
+                    let newTab;
+                    const currentTab = e.target;
+                    const currentIndex = Array.from(tabButtons).indexOf(currentTab);
+
+                    switch (e.key) {
+                        case 'ArrowLeft':
+                            newTab = tabButtons[currentIndex - 1] || tabButtons[tabButtons.length - 1];
+                            break;
+                        case 'ArrowRight':
+                            newTab = tabButtons[currentIndex + 1] || tabButtons[0];
+                            break;
+                        case 'Home':
+                            newTab = tabButtons[0];
+                            break;
+                        case 'End':
+                            newTab = tabButtons[tabButtons.length - 1];
+                            break;
+                        default:
+                            return;
+                    }
+
+                    e.preventDefault();
+                    newTab.focus();
+                    switchTab(newTab);
+                });
+            });
+
+            // Initialize the first tab
+            const firstTab = tabButtons[0];
+            if (firstTab) {
+                switchTab(firstTab);
+            }
+
+            // Initialize password tab functionality
+            function initializePasswordTab() {
+                const newPasswordInput = document.getElementById('newPassword');
+                const confirmPasswordInput = document.getElementById('confirmPassword');
+                const passwordHelp = document.getElementById('passwordHelp');
+                const passwordMatchHelp = document.getElementById('passwordMatchHelp');
+                const strengthText = document.getElementById('strengthText');
+                const strengthMeter = document.querySelector('.strength-meter__bar');
+                const passwordForm = document.getElementById('passwordForm');
+
+                function checkPasswordStrength(password) {
+                    let strength = 0;
+                    let feedback = [];
+                    
+                    // Length check
+                    if (password.length >= 6) {
+                        strength += 1;
+                        if (password.length >= 8) {
+                            strength += 1;
+                            feedback.push('Good length');
+                        } else {
+                            feedback.push('Consider using 8 or more characters');
+                        }
+                    } else {
+                        feedback.push('Password must be at least 6 characters');
+                    }
+                    
+                    // Character type checks
+                    if (/[A-Z]/.test(password)) {
+                        strength += 1;
+                        feedback.push('Contains uppercase letter');
+                    }
+                    if (/[a-z]/.test(password)) {
+                        strength += 1;
+                        feedback.push('Contains lowercase letter');
+                    }
+                    if (/[0-9]/.test(password)) {
+                        strength += 1;
+                        feedback.push('Contains number');
+                    }
+                    if (/[^A-Za-z0-9]/.test(password)) {
+                        strength += 1;
+                        feedback.push('Contains special character');
+                    }
+
+                    // Update strength meter
+                    const strengthLevels = ['none', 'weak', 'medium', 'strong', 'very-strong'];
+                    const strengthTexts = ['None', 'Weak', 'Medium', 'Strong', 'Very Strong'];
+                    
+                    const strengthTextContainer = document.querySelector('.strength-meter__text');
+                    
+                    strengthMeter.classList.remove(
+                        'strength-meter__bar--none',
+                        'strength-meter__bar--weak',
+                        'strength-meter__bar--medium',
+                        'strength-meter__bar--strong',
+                        'strength-meter__bar--very-strong'
+                    );
+                    strengthTextContainer.classList.remove(
+                        'strength-meter__text--none',
+                        'strength-meter__text--weak',
+                        'strength-meter__text--medium',
+                        'strength-meter__text--strong',
+                        'strength-meter__text--very-strong'
+                    );
+
+                    const currentLevel = strengthLevels[strength];
+                    strengthMeter.classList.add(`strength-meter__bar--${currentLevel}`);
+                    strengthTextContainer.classList.add(`strength-meter__text--${currentLevel}`);
+                    
+                    strengthText.textContent = strengthTexts[strength];
+                    strengthMeter.style.width = `${(strength / 5) * 100}%`;
+
+                    if (password.length > 0) {
+                        passwordHelp.textContent = feedback.join(', ');
+                    } else {
+                        passwordHelp.textContent = '';
+                    }
+                    
+                    return strength;
+                }
+
+                function validatePasswords() {
+                    const newPassword = newPasswordInput.value;
+                    const confirmPassword = confirmPasswordInput.value;
+                    let isValid = true;
+
+                    passwordMatchHelp.textContent = '';
+
+                    if (newPassword.length < 6) {
+                        passwordHelp.textContent = 'Password must be at least 6 characters long';
+                        isValid = false;
+                    }
+
+                    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+                        passwordMatchHelp.textContent = 'Passwords do not match';
+                        isValid = false;
+                    } else if (confirmPassword && newPassword === confirmPassword) {
+                        passwordMatchHelp.textContent = 'Passwords match';
+                        passwordMatchHelp.style.color = '#28a745';
+                    }
+
+                    return isValid;
+                }
+
+                if (newPasswordInput && confirmPasswordInput && passwordForm) {
+                    newPasswordInput.addEventListener('input', function() {
+                        checkPasswordStrength(this.value);
+                        validatePasswords();
+                    });
+
+                    confirmPasswordInput.addEventListener('input', validatePasswords);
+
+                    passwordForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        if (validatePasswords()) {
+                            alert('Password updated successfully!');
+                            this.reset();
+                            strengthText.textContent = 'None';
+                            strengthMeter.style.width = '0%';
+                            passwordHelp.textContent = '';
+                            passwordMatchHelp.textContent = '';
+                            
+                            const strengthTextContainer = document.querySelector('.strength-meter__text');
+                            strengthMeter.classList.remove(
+                                'strength-meter__bar--none',
+                                'strength-meter__bar--weak',
+                                'strength-meter__bar--medium',
+                                'strength-meter__bar--strong',
+                                'strength-meter__bar--very-strong'
+                            );
+                            strengthTextContainer.classList.remove(
+                                'strength-meter__text--none',
+                                'strength-meter__text--weak',
+                                'strength-meter__text--medium',
+                                'strength-meter__text--strong',
+                                'strength-meter__text--very-strong'
+                            );
+                            strengthMeter.classList.add('strength-meter__bar--none');
+                            strengthTextContainer.classList.add('strength-meter__text--none');
+                        }
+                    });
+                }
+            }
+
+            // Add this to your existing script
+            function initializeBasicTab() {
+                const basicForm = document.getElementById('basicDetailsForm');
+                const profileImage = document.getElementById('profileImage');
+                const imagePreview = document.querySelector('.image-preview__container');
+                const fileText = document.querySelector('.file-upload__text');
+                const fullNameInput = document.getElementById('fullName');
+                const emailInput = document.getElementById('email');
+                const phoneInput = document.getElementById('phone');
+                const addressInput = document.getElementById('address');
+
+                // Form validation
+                function validateForm() {
+                    let isValid = true;
+                    const fullNameHelp = document.getElementById('fullNameHelp');
+                    const emailHelp = document.getElementById('emailHelp');
+                    const phoneHelp = document.getElementById('phoneHelp');
+                    const addressHelp = document.getElementById('addressHelp');
+
+                    // Full Name validation
+                    if (fullNameInput.value.length < 3) {
+                        fullNameHelp.textContent = 'Full name must be at least 3 characters long';
+                        isValid = false;
+                    } else {
+                        fullNameHelp.textContent = '';
+                    }
+
+                    // Email validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(emailInput.value)) {
+                        emailHelp.textContent = 'Please enter a valid email address';
+                        isValid = false;
+                    } else {
+                        emailHelp.textContent = '';
+                    }
+
+                    // Phone validation
+                    const phoneRegex = /^\+?[0-9\s\-]{7,15}$/;
+                    if (!phoneRegex.test(phoneInput.value)) {
+                        phoneHelp.textContent = 'Please enter a valid phone number';
+                        isValid = false;
+                    } else {
+                        phoneHelp.textContent = '';
+                    }
+
+                    // Address validation
+                    if (addressInput.value.length < 5) {
+                        addressHelp.textContent = 'Address must be at least 5 characters long';
+                        isValid = false;
+                    } else {
+                        addressHelp.textContent = '';
+                    }
+
+                    return isValid;
+                }
+
+                // Image upload handling
+                if (profileImage && imagePreview && fileText) {
+                    profileImage.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            if (file.type.startsWith('image/')) {
+                                if (file.size <= 5 * 1024 * 1024) { // 5MB limit
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        imagePreview.innerHTML = `
+                                            <img src="${e.target.result}" alt="Profile preview" class="image-preview" />
+                                            <button type="button" class="btn btn--danger image-preview__remove">Remove</button>
+                                        `;
+                                        fileText.textContent = file.name;
+                                        
+                                        // Add remove button functionality
+                                        const removeBtn = imagePreview.querySelector('.image-preview__remove');
+                                        removeBtn.addEventListener('click', () => {
+                                            profileImage.value = '';
+                                            imagePreview.innerHTML = '';
+                                            fileText.textContent = 'No file chosen';
+                                        });
+                                    };
+                                    reader.readAsDataURL(file);
+                                } else {
+                                    alert('File size must be less than 5MB');
+                                    profileImage.value = '';
+                                }
+                            } else {
+                                alert('Please select an image file');
+                                profileImage.value = '';
+                            }
+                        }
+                    });
+                }
+
+                // Form submission
+                if (basicForm) {
+                    // Add input event listeners for real-time validation
+                    fullNameInput?.addEventListener('input', validateForm);
+                    emailInput?.addEventListener('input', validateForm);
+                    phoneInput?.addEventListener('input', validateForm);
+                    addressInput?.addEventListener('input', validateForm);
+
+                    basicForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        if (validateForm()) {
+                            // Here you would typically send the form data to your server
+                            alert('Basic details updated successfully!');
+                            this.reset();
+                            if (imagePreview) {
+                                imagePreview.innerHTML = '';
+                            }
+                            if (fileText) {
+                                fileText.textContent = 'No file chosen';
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Add this to your existing script
+            function initializeTripsTab() {
+                const statusFilter = document.getElementById('statusFilter');
+                const searchInput = document.getElementById('searchTrips');
+                const tripCards = document.querySelectorAll('.trip-card');
+
+                function filterTrips() {
+                    const selectedStatus = statusFilter.value;
+                    const searchTerm = searchInput.value.toLowerCase();
+
+                    tripCards.forEach(card => {
+                        const title = card.querySelector('.trip-card__title').textContent.toLowerCase();
+                        const bookingId = card.querySelector('.trip-card__value').textContent.toLowerCase();
+                        const status = card.querySelector('.trip-card__status').classList.contains(`trip-card__status--${selectedStatus}`);
+                        
+                        const matchesStatus = selectedStatus === 'all' || status;
+                        const matchesSearch = searchTerm === '' || 
+                            title.includes(searchTerm) || 
+                            bookingId.includes(searchTerm);
+
+                        // Show/hide card based on filters
+                        if (matchesStatus && matchesSearch) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    // Show message if no trips match the filters
+                    const visibleCards = document.querySelectorAll('.trip-card[style="display: block"]');
+                    const noResultsMessage = document.getElementById('noTripsMessage');
+                    
+                    if (visibleCards.length === 0) {
+                        if (!noResultsMessage) {
+                            const message = document.createElement('div');
+                            message.id = 'noTripsMessage';
+                            message.className = 'no-results-message';
+                            message.textContent = 'No trips found matching your filters.';
+                            document.querySelector('.trips-grid').appendChild(message);
+                        }
+                    } else {
+                        if (noResultsMessage) {
+                            noResultsMessage.remove();
+                        }
+                    }
+                }
+
+                // Add event listeners
+                if (statusFilter) {
+                    statusFilter.addEventListener('change', filterTrips);
+                }
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', filterTrips);
+                }
+
+                // Initialize trip actions
+                document.querySelectorAll('.trip-card__actions .btn').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        const action = this.textContent.trim();
+                        const card = this.closest('.trip-card');
+                        const tripTitle = card.querySelector('.trip-card__title').textContent;
+                        const bookingId = card.querySelector('.trip-card__value').textContent;
+
+                        if (action === 'Cancel Trip') {
+                            if (confirm(`Are you sure you want to cancel the trip "${tripTitle}"?`)) {
+                                // Here you would typically make an API call to cancel the trip
+                                alert(`Trip ${bookingId} has been cancelled.`);
+                                // Update the card status
+                                const statusBadge = card.querySelector('.trip-card__status');
+                                statusBadge.className = 'trip-card__status trip-card__status--cancelled';
+                                statusBadge.textContent = 'Cancelled';
+                                // Update the actions
+                                const actionsDiv = card.querySelector('.trip-card__actions');
+                                actionsDiv.innerHTML = `
+                                    <button class="btn btn--primary btn--small">View Details</button>
+                                    <button class="btn btn--primary btn--small">Download Bill</button>
+                                `;
+                            }
+                        } else if (action === 'View Details') {
+                            // Here you would typically show a modal with trip details
+                            alert(`Viewing details for trip ${bookingId}`);
+                        } else if (action === 'Download Bill') {
+                            // Here you would typically trigger a file download
+                            alert(`Downloading bill for trip ${bookingId}`);
+                        }
+                    });
+                });
+            }
+
+            // Add this to your existing script
+            function initializeDeactivateTab() {
+                const modal = document.getElementById('deactivateModal');
+                const openModalBtn = document.getElementById('openModal');
+                const closeModalBtn = document.getElementById('closeModal');
+                const confirmInput = document.getElementById('confirmInput');
+                const confirmDeactivateBtn = document.getElementById('confirmDeactivate');
+                const deactivateMessage = document.getElementById('deactivateMessage');
+
+                function openModal() {
+                    modal.hidden = false;
+                    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                    confirmInput.focus();
+                }
+
+                function closeModal() {
+                    modal.hidden = true;
+                    document.body.style.overflow = ''; // Restore scrolling
+                    confirmInput.value = '';
+                    confirmDeactivateBtn.disabled = true;
+                    deactivateMessage.textContent = '';
+                    deactivateMessage.className = 'form__message';
+                }
+
+                function handleConfirmInput() {
+                    const isDeactivate = confirmInput.value.toLowerCase() === 'deactivate';
+                    confirmDeactivateBtn.disabled = !isDeactivate;
+                    
+                    if (confirmInput.value && !isDeactivate) {
+                        deactivateMessage.textContent = 'Please type "deactivate" exactly as shown';
+                        deactivateMessage.className = 'form__message error';
+                    } else {
+                        deactivateMessage.textContent = '';
+                        deactivateMessage.className = 'form__message';
+                    }
+                }
+
+                function handleDeactivate() {
+                    // Here you would typically make an API call to deactivate the account
+                    deactivateMessage.textContent = 'Account deactivation successful';
+                    deactivateMessage.className = 'form__message success';
+                    
+                    // Disable the confirm button and input
+                    confirmDeactivateBtn.disabled = true;
+                    confirmInput.disabled = true;
+                    
+                    // Close the modal after a delay
+                    setTimeout(() => {
+                        closeModal();
+                        // Redirect to logout or home page
+                        // window.location.href = '/logout';
+                    }, 2000);
+                }
+
+                // Event listeners
+                if (openModalBtn) {
+                    openModalBtn.addEventListener('click', openModal);
+                }
+
+                if (closeModalBtn) {
+                    closeModalBtn.addEventListener('click', closeModal);
+                }
+
+                if (confirmInput) {
+                    confirmInput.addEventListener('input', handleConfirmInput);
+                    // Close modal on Escape key
+                    confirmInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') {
+                            closeModal();
+                        }
+                    });
+                }
+
+                if (confirmDeactivateBtn) {
+                    confirmDeactivateBtn.addEventListener('click', handleDeactivate);
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            // Add this to your existing script
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    this.appendChild(ripple);
+
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    ripple.style.width = ripple.style.height = `${size}px`;
+
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+
+                    ripple.addEventListener('animationend', () => {
+                        ripple.remove();
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

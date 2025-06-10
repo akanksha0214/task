@@ -1,0 +1,45 @@
+@use 'variables' as *;
+
+@media print {
+    // Hide non-essential elements
+    .profile__tabs,
+    .btn,
+    .form-control:focus {
+        display: none !important;
+    }
+
+    // Reset colors and backgrounds
+    body {
+        color: black !important;
+        background: white !important;
+    }
+
+    // Ensure proper page breaks
+    .profile-form {
+        page-break-inside: avoid;
+    }
+
+    // Adjust typography for print
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+        page-break-after: avoid;
+    }
+
+    // Remove shadows and decorative elements
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    // Ensure links are visible
+    a {
+        color: black !important;
+        text-decoration: underline !important;
+    }
+
+    // Show URLs for links
+    a[href]:after {
+        content: " (" attr(href) ")";
+        font-size: 90%;
+    }
+} 

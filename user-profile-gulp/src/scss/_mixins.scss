@@ -1,0 +1,47 @@
+// Responsive breakpoints
+@mixin respond-to($breakpoint) {
+    @if $breakpoint == sm {
+        @media (max-width: $breakpoint-sm) { @content; }
+    }
+    @if $breakpoint == md {
+        @media (max-width: $breakpoint-md) { @content; }
+    }
+    @if $breakpoint == lg {
+        @media (max-width: $breakpoint-lg) { @content; }
+    }
+    @if $breakpoint == xl {
+        @media (max-width: $breakpoint-xl) { @content; }
+    }
+}
+
+// Flexbox
+@mixin flex($direction: row, $justify: flex-start, $align: stretch) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+}
+
+// Transitions
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+    transition: $property $duration $timing;
+}
+
+// Box shadow
+@mixin box-shadow($level: 1) {
+    @if $level == 1 {
+        box-shadow: $shadow-sm;
+    } @else if $level == 2 {
+        box-shadow: $shadow-md;
+    } @else if $level == 3 {
+        box-shadow: $shadow-lg;
+    }
+}
+
+// Focus styles
+@mixin focus-ring($color: $primary-color) {
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($color, 0.3);
+    }
+} 

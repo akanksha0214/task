@@ -1,0 +1,14 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.profile-header {
+    padding: $spacing-xl 0;
+    background: white;
+    box-shadow: $shadow-sm;
+
+    &__title {
+        margin-bottom: $spacing-lg;
+        text-align: center;
+        color: $primary-color;
+    }
+} 

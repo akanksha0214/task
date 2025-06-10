@@ -1,0 +1,17 @@
+<!-- Deactivate Account -->
+<section id="panel-deactivate" role="tabpanel" aria-labelledby="tab-deactivate" class="tab-content">
+    <h2>Deactivate Account</h2>
+    <p class="warning-text">Warning: Deactivating your account will hide your profile and prevent you from accessing certain features. You can reactivate your account at any time by logging in.</p>
+    
+    <button id="openModalBtn" class="btn btn--danger">Deactivate Account</button>
+
+    <!-- Modal -->
+    <dialog id="deactivateModal" aria-modal="true" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+        <h3 id="modalTitle">Confirm Account Deactivation</h3>
+        <p id="modalDesc">Please type <strong>deactivate</strong> to enable the confirm button.</p>
+        <input type="text" id="deactivateInput" aria-label="Type deactivate to confirm" />
+        <button id="confirmDeactivate" disabled class="btn btn--danger">Confirm Deactivation</button>
+        <button id="cancelDeactivate" class="btn btn--secondary">Cancel</button>
+        <p id="modalMessage" aria-live="polite" style="margin-top: 1rem;"></p>
+    </dialog>
+</section> 

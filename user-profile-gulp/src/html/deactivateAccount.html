@@ -1,0 +1,18 @@
+<section class="tab-content" id="deactivate-account" role="tabpanel" hidden>
+  <h2>Deactivate Account</h2>
+  <button id="openModal" class="btn btn--danger">Deactivate Account</button>
+
+  <div class="modal" id="deactivateModal" role="dialog" aria-modal="true" hidden>
+    <div class="modal__content">
+      <button class="modal__close" id="closeModal" aria-label="Close modal">&times;</button>
+      <h3>Confirm Deactivation</h3>
+      <p>Type <strong>deactivate</strong> below to confirm account deactivation.</p>
+
+      <input type="text" id="confirmInput" placeholder="Type 'deactivate'" />
+      <button id="confirmDeactivate" class="btn btn--danger" disabled>Confirm</button>
+
+      <div id="deactivateMessage" class="form__message"></div>
+    </div>
+  </div>
+</section>
+

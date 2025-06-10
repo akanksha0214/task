@@ -1,0 +1,60 @@
+@use '../variables' as *;
+
+.form-group {
+    margin-bottom: $spacing-lg;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: $spacing-sm;
+    font-weight: $font-weight-bold;
+    color: $text-color;
+}
+
+.form-control {
+    width: 100%;
+    padding: $spacing-sm;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: $font-size-base;
+    transition: $transition-base;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    &.is-invalid {
+        border-color: $danger-color;
+        
+        &:focus {
+            box-shadow: 0 0 0 3px rgba($danger-color, 0.1);
+        }
+    }
+}
+
+.invalid-feedback {
+    display: none;
+    margin-top: $spacing-sm;
+    color: $danger-color;
+    font-size: $font-size-sm;
+
+    .is-invalid + & {
+        display: block;
+    }
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.profile-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: $spacing-lg;
+    background: white;
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+} 

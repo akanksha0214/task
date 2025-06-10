@@ -1,0 +1,48 @@
+@use '../variables' as *;
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-sm $spacing-lg;
+    border: none;
+    border-radius: $border-radius;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-base;
+    cursor: pointer;
+    transition: $transition-base;
+    text-decoration: none;
+    gap: $spacing-sm;
+
+    &-primary {
+        background: linear-gradient(45deg, $primary-color, $secondary-color);
+        color: white;
+        box-shadow: $shadow-sm;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: $shadow-md;
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
+        }
+    }
+
+    &-danger {
+        background: linear-gradient(45deg, $danger-color, #ef473a);
+        color: white;
+        box-shadow: $shadow-sm;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: $shadow-md;
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba($danger-color, 0.3);
+        }
+    }
+} 

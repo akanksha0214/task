@@ -1,0 +1,24 @@
+@use '../variables' as *;
+
+.container {
+    width: 100%;
+    max-width: $container-max-width;
+    margin: 0 auto;
+    padding: 0 $container-padding;
+
+    @include mixins.respond-to(lg) {
+        max-width: 960px;
+    }
+
+    @include mixins.respond-to(md) {
+        max-width: 720px;
+    }
+
+    @include mixins.respond-to(sm) {
+        max-width: 540px;
+    }
+}
+
+.profile-content {
+    padding: $spacing-xl 0;
+} 
