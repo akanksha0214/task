@@ -85,7 +85,7 @@ user-profile-gulp/
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd user-profile-gulp
+   cd <project-root>/task/user-profile-gulp
    ```
 
 2. **Install dependencies**
@@ -93,18 +93,28 @@ user-profile-gulp/
    npm install
    ```
 
-3. **Start development server**
+3. **Add missing npm scripts (if not present)**
+   Ensure your `package.json` includes the following scripts:
+   ```json
+   "scripts": {
+     "start": "gulp",
+     "build": "gulp build"
+   }
+   ```
+   If not, add them manually.
+
+4. **Run the development server**
    ```bash
    npm start
    ```
    This will:
    - Compile SCSS to CSS
    - Process HTML partials
-   - Start a local development server
+   - Start a local development server (usually at http://localhost:3000 or http://localhost:3001)
    - Enable live reload
    - Watch for file changes
 
-4. **Build for production**
+5. **Build for production**
    ```bash
    npm run build
    ```
@@ -112,6 +122,15 @@ user-profile-gulp/
    - Minify CSS
    - Process and minify HTML
    - Create production-ready files in the `dist` directory
+
+## Troubleshooting
+
+- If you see errors about missing packages (e.g., `gulp-sourcemaps`, `gulp-notify`, `gulp-plumber`, `gulp-rename`), install them with:
+  ```bash
+  npm install gulp-sourcemaps gulp-notify gulp-plumber gulp-rename --save-dev
+  ```
+- If you see SCSS errors about undefined variables, ensure all SCSS partials (like `_variables.scss`) are correctly imported in your `main.scss`.
+- If the server does not open automatically, visit [http://localhost:3000](http://localhost:3000) or [http://localhost:3001](http://localhost:3001) in your browser.
 
 ## Development Workflow
 
